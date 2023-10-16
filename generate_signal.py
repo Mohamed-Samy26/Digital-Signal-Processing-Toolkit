@@ -5,18 +5,26 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from SignalData import SignalData
 import tkinter as tk
+from comparesignals import SignalSamplesAreEqual
 
-def sinusoidal(amplitude:float, phase_shift:float,
-                    analog_freq:float, sample_rate:float,
-                    duration:float, wave_choice:str):
-    
-    t = np.arange(0, duration, 1/sample_rate)
-    angular_freq = 2 * np.pi * analog_freq
+def sinusoidal(amplitude: float, phase_shift: float,
+               analog_freq: float, sample_rate: float,
+               duration: float, wave_choice: str):
+    if sample_rate==0:
+        sample_rate=analog_freq*3
+    t = np.arange(0,sample_rate)
 
-    if wave_choice == "Sin":
-        signal = amplitude * np.sin(angular_freq * t + phase_shift)
+    if analog_freq == 0:
+        signal = np.full_like(t, amplitude)  # Set signal to a constant value
     else:
-        signal = amplitude * np.cos(angular_freq * t + phase_shift)
+        angular_freq = 2 * np.pi * analog_freq
+        if wave_choice == "Sin":
+            signal = amplitude * np.sin(angular_freq/sample_rate * t + phase_shift)
+            SignalSamplesAreEqual("SinOutput.txt", 0.1, signal)
+        else:
+            signal = amplitude * np.cos(angular_freq/sample_rate * t + phase_shift)
+            SignalSamplesAreEqual("CosOutput.txt", 0.1, signal)
+
 
     plt.plot(t, signal)
     plt.xlabel('Time (s)')
@@ -27,6 +35,17 @@ def sinusoidal(amplitude:float, phase_shift:float,
         plt.title('Cos wave Signal')
     plt.grid(True)
     plt.show()
+
+    plt.stem(t, signal, use_line_collection=True)
+    plt.xlabel('Time (s)')
+    plt.ylabel('Amplitude')
+    if wave_choice == "Sin":
+        plt.title('Sin wave Signal')
+    else:
+        plt.title('Cos wave Signal')
+    plt.grid(True)
+    plt.show()
+
 
 def continuous(points: List[tuple]):
     x = [point[0] for point in points]
