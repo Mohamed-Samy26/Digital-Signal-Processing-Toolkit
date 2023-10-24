@@ -1,3 +1,4 @@
+from SignalData import SignalData
 import generate_signal as gs
 import tkinter as tk
 import numpy as np
@@ -38,8 +39,6 @@ def addition(signal1, signal2):
             result.append((signal1[i][0], signal1[i][1] + signal2[i][1]))
     draw(result)
 
-
-
 def subtraction(signal1, signal2):
     result = []
     max_size = max(len(signal1), len(signal2))
@@ -75,3 +74,43 @@ def square(signal1, signal2):
     draw(result1)
 
     draw(result2)
+    
+def shift(signal, shift_value):
+    result = []
+    for i in range(len(signal)):
+        result.append((signal[i][0]+shift_value,signal[i][1]))
+    draw(result)
+
+def normalizeZeroToOne(signal):
+    result = []
+    max = signal[0][1]
+    min = signal[0][1]
+    for i in range(len(signal)):
+        if signal[i][1] > max:
+            max = signal[i][1]
+        if signal[i][1] < min:
+            min = signal[i][1]
+    for i in range(len(signal)):
+        result.append((signal[i][0],(signal[i][1]-min)/(max-min)))
+    draw(result)
+    
+def normalizeMinusOneToOne(signal):
+    result = []
+    max = signal[0][1]
+    min = signal[0][1]
+    for i in range(len(signal)):
+        if signal[i][1] > max:
+            max = signal[i][1]
+        if signal[i][1] < min:
+            min = signal[i][1]
+    for i in range(len(signal)):
+        result.append((signal[i][0],((signal[i][1]-min)/(max-min))*2-1))
+    draw(result)
+    
+def accumulate(signal):
+    result = []
+    sum = 0
+    for i in range(len(signal)):
+        sum += signal[i][1]
+        result.append((signal[i][0],sum))
+    draw(result)

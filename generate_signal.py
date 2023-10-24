@@ -5,11 +5,10 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from SignalData import SignalData
 import tkinter as tk
-from comparesignals import SignalSamplesAreEqual
+# from comparesignals import SignalSamplesAreEqual
 
 def sinusoidal(amplitude: float, phase_shift: float,
-               analog_freq: float, sample_rate: float,
-               duration: float, wave_choice: str):
+               analog_freq: float, sample_rate: float, wave_choice: str):
     if sample_rate==0:
         sample_rate=analog_freq*3
     t = np.arange(0,sample_rate)
@@ -20,10 +19,10 @@ def sinusoidal(amplitude: float, phase_shift: float,
         angular_freq = 2 * np.pi * analog_freq
         if wave_choice == "Sin":
             signal = amplitude * np.sin(angular_freq/sample_rate * t + phase_shift)
-            SignalSamplesAreEqual("SinOutput.txt", 0.1, signal)
+            # SignalSamplesAreEqual("SinOutput.txt", 0.1, signal)
         else:
             signal = amplitude * np.cos(angular_freq/sample_rate * t + phase_shift)
-            SignalSamplesAreEqual("CosOutput.txt", 0.1, signal)
+            # SignalSamplesAreEqual("CosOutput.txt", 0.1, signal)
 
 
     plt.plot(t, signal)

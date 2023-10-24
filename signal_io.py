@@ -29,6 +29,10 @@ def read_signal(file_path: str):
             
     return SignalData(signal_type, is_periodic, points)
 
+def read_signal_file():
+    file_path = filedialog.askopenfilename(filetypes=[('Text Files', '*.txt')])       
+    return read_signal(file_path)
+
 def write_signal(file_path: str, signal_data: SignalData):
     with open(file_path, 'w') as file:
         file.write(f"{1 if signal_data.signal_type == 'FREQ' else 0}\n")

@@ -77,13 +77,6 @@ sample_rate_label.pack(pady=10)
 sample_rate_entry = tk.Entry(input_frame, font=("Arial", 12))
 sample_rate_entry.pack()
 
-# duration
-
-duration_label = tk.Label(input_frame, text="Duration (s):", font=("Arial", 14), bg='#F5F5F5')
-duration_label.pack(pady=10)
-duration_entry = tk.Entry(input_frame, font=("Arial", 12))
-duration_entry.pack()
-
 # generate button
 
 def validate_input():
@@ -92,7 +85,6 @@ def validate_input():
         float(phase_shift_entry.get())
         float(analog_freq_entry.get())
         float(sample_rate_entry.get())
-        float(duration_entry.get())
     except ValueError:
         tk.messagebox.showerror("Error", "Invalid input value")
         return False
@@ -104,7 +96,6 @@ def generate_signal():
                        float(phase_shift_entry.get()),
                        float(analog_freq_entry.get()),
                        float(sample_rate_entry.get()),
-                       float(duration_entry.get()),
                        signal_choice.get())
 
 generate_button = tk.Button(root, text="Generate Signal", command=generate_signal)
