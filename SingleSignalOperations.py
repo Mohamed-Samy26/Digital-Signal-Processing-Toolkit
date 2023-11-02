@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import filedialog
 import signal_io as sio
 import Arithmatic_operations as op
-
+import main as t2
 class SingleSignalOperations:
     
     def __init__(self):
@@ -111,6 +111,7 @@ class SingleSignalOperations:
 
         # Start GUI loop
         root.mainloop()
+        t2.MainWindow().run()
 
 if __name__ == "__main__":
     processor = SingleSignalOperations()

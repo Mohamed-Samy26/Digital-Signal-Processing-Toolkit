@@ -1,10 +1,7 @@
 import tkinter as tk
-from tkinter import ttk
-import generate_signal as gs
 import signal_io as sio
 import Arithmatic_operations as op
-from typing import List
-
+import main as t2
 class MultiSignalOperations:
     def __init__(self):
         self.window = tk.Tk()
@@ -12,31 +9,53 @@ class MultiSignalOperations:
         self.window.geometry("400x600")
         self.sig1 = []
         self.sig2 = []
-        self.file1_label = tk.Label(self.window, text="Select File 1:")
-        self.file1_label.pack(pady=10)
-        self.file1_button = ttk.Button(self.window, text="Browse", command=self.select_file1)
-        self.file1_button.pack()
-        self.file2_label = tk.Label(self.window, text="Select File 2:")
-        self.file2_label.pack(pady=10)
-        self.file2_button = ttk.Button(self.window, text="Browse", command=self.select_file2)
-        self.file2_button.pack()
-        self.add_button = ttk.Button(self.window, text="Addition", command=self.perform_addition)
-        self.add_button.pack(pady=10)
-        self.sub_button = ttk.Button(self.window, text="Subtraction", command=self.perform_subtraction)
-        self.sub_button.pack(pady=10)
-        self.constant_label = tk.Label(self.window, text="Constant:")
+
+        self.file1_frame = tk.Frame(self.window, bd=1, relief=tk.SOLID)
+        self.file1_frame.pack(pady=10)
+        self.file1_label = tk.Label(self.file1_frame, text="Select File 1:")
+        self.file1_label.pack(side=tk.LEFT)
+        self.file1_button = tk.Button(self.file1_frame, text="Browse", command=self.select_file1, font=("Arial", 14),
+                                      bg="#4CAF50", fg="white", padx=10, pady=5, bd=0, width=10)
+        self.file1_button.pack(side=tk.LEFT)
+
+        self.file2_frame = tk.Frame(self.window, bd=1, relief=tk.SOLID)
+        self.file2_frame.pack(pady=10)
+        self.file2_label = tk.Label(self.file2_frame, text="Select File 2:")
+        self.file2_label.pack(side=tk.LEFT)
+        self.file2_button = tk.Button(self.file2_frame, text="Browse", command=self.select_file2, font=("Arial", 14),
+                                      bg="#4CAF50", fg="white", padx=10, pady=5, bd=0, width=10)
+        self.file2_button.pack(side=tk.LEFT)
+
+        self.add_frame = tk.Frame(self.window, bd=1, relief=tk.SOLID)
+        self.add_frame.pack(pady=10)
+        self.add_button = tk.Button(self.add_frame, text="Addition", command=self.perform_addition, font=("Arial", 14), bg="#4CAF50", fg="white", padx=10, pady=5, bd=0,width=10)
+        self.add_button.pack()
+
+        self.sub_frame = tk.Frame(self.window, bd=1, relief=tk.SOLID)
+        self.sub_frame.pack(pady=10)
+        self.sub_button = tk.Button(self.sub_frame, text="Subtraction", command=self.perform_subtraction, font=("Arial", 14), bg="#4CAF50", fg="white", padx=10, pady=5, bd=0,width=10)
+        self.sub_button.pack()
+
+        self.mul_frame = tk.Frame(self.window, bd=1, relief=tk.SOLID)
+        self.mul_frame.pack(pady=10)
+        self.constant_label = tk.Label(self.mul_frame, text="Constant:")
         self.constant_label.pack(pady=10)
-        self.entry_constant = tk.Entry(self.window)
+        self.entry_constant = tk.Entry(self.mul_frame)
         self.entry_constant.pack(pady=5)
-        self.mul_button = ttk.Button(self.window, text="Multiplication", command=self.perform_multiplication)
-        self.mul_button.pack(pady=10)
-        self.sq_button = ttk.Button(self.window, text="Squaring", command=self.perform_squaring)
-        self.sq_button.pack(pady=10)
+        self.mul_button = tk.Button(self.mul_frame, text="Multiplication", command=self.perform_multiplication, font=("Arial", 14), bg="#4CAF50", fg="white", padx=10, pady=5, bd=0,width=10)
+        self.mul_button.pack()
+
+        self.sq_frame = tk.Frame(self.window, bd=1, relief=tk.SOLID)
+        self.sq_frame.pack(pady=10)
+        self.sq_button = tk.Button(self.sq_frame, text="Squaring", command=self.perform_squaring, font=("Arial", 14), bg="#4CAF50", fg="white", padx=10, pady=5, bd=0,width=10)
+        self.sq_button.pack()
+
         self.result_label = tk.Label(self.window, text="Result:")
         self.result_label.pack(pady=10)
-        self.style = ttk.Style()
-        self.style.configure("TButton", font=("Helvetica", 10), padding=10)
+
         self.window.mainloop()
+
+        t2.MainWindow().run()
 
     def select_file1(self):
         try:

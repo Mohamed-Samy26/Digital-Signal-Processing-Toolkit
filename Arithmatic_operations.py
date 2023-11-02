@@ -7,6 +7,9 @@ from matplotlib.figure import Figure
 import generate_signal as gs
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
+from comparesignals import SignalSamplesAreEqual
+
+
 def draw(result):
     fig_continuous = gs.continuous(result)
     fig_discrete = gs.discrete(result)
@@ -37,6 +40,7 @@ def addition(signal1, signal2):
             result.append((signal1[i][0], signal1[i][1]))
         else:
             result.append((signal1[i][0], signal1[i][1] + signal2[i][1]))
+    #SignalSamplesAreEqual("output signals/Signal1+signal2.txt", 0.1, result)
     draw(result)
 
 def subtraction(signal1, signal2):
@@ -51,6 +55,7 @@ def subtraction(signal1, signal2):
         else:
             result.append((signal1[i][0], abs(signal1[i][1] - signal2[i][1])))
 
+    #SignalSamplesAreEqual("output signals/signal1-signal2.txt", 0.1, result)
     draw(result)
 
 def multiplication(signal1, constant):
@@ -59,6 +64,7 @@ def multiplication(signal1, constant):
     for i in range(len(signal1)):
        result.append((signal1[i][0],signal1[i][1]*constant))
 
+    #SignalSamplesAreEqual("output signals/MultiplySignalByConstant-Signal1 - by 5.txt", 0.1, result)
     draw(result)
 
 def square(signal1, signal2):
@@ -71,6 +77,7 @@ def square(signal1, signal2):
     for i in range(len(signal2)):
        result2.append((signal2[i][0],signal2[i][1]*signal2[i][1]))
 
+    #SignalSamplesAreEqual("output signals/Output squaring signal 1.txt", 0.1, result1)
     draw(result1)
 
     draw(result2)
@@ -78,7 +85,7 @@ def square(signal1, signal2):
 def shift(signal, shift_value):
     result = []
     for i in range(len(signal)):
-        result.append((signal[i][0]+shift_value,signal[i][1]))
+        result.append((signal[i][0]-shift_value,signal[i][1]))
     draw(result)
 
 def normalizeZeroToOne(signal):

@@ -1,113 +1,69 @@
 import tkinter as tk
-from tkinter import filedialog
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import generate_signal as gs
-import signal_io as sio
+import MultiSignalOperations as Ms
+import SingleSignalOperations as Ss
+import GenerateWindow as fw
+import Frequency_Domain as freq_domain
+import Quantize_Signal as quant_sig
+class MainWindow:
+    def __init__(self):
+        self.window = tk.Tk()
+        self.window.title("Signal Processor")
+        self.window.geometry("400x500")
+        self.window.configure(bg="#f2f2f2")
+
+        self.create_widgets()
+
+    def create_widgets(self):
+        button_style = {"font": ("Arial", 14), "bg": "#4CAF50", "fg": "white", "padx": 10, "pady": 5, "bd": 0, "width": 20}
+
+        # Create Task1 Button
+        button1 = tk.Button(self.window, text="Signal Generation", command=self.open_signal_generation, **button_style)
+        button1.pack(pady=10)
+
+        # Create Single Signal Operation Button
+        button2 = tk.Button(self.window, text="Single Signal Operation", command=self.open_single_signal_operation, **button_style)
+        button2.pack(pady=10)
+
+        # Create Multiple Signal Operation Button
+        button3 = tk.Button(self.window, text="Multiple Signal Operation", command=self.open_multiple_signal_operation, **button_style)
+        button3.pack(pady=10)
+
+        # Create New Button
+        button4 = tk.Button(self.window, text="Quantizer Signal", command=self.open_quantizer, **button_style)
+        button4.pack(pady=10)
 
 
-# main window
+        # Create New Button
+        button5 = tk.Button(self.window, text="Frequency Domain", command=self.opem_freq_domain, **button_style)
+        button5.pack(pady=10)
 
-root = tk.Tk()
-root.title("Signal Processing")
-root.geometry("600x800")
-root.configure(bg='#F5F5F5')
+    def open_signal_generation(self):
+        self.window.destroy()
+        x = fw.SignalProcessingApp()
+        x.run()
 
-# menu bar
+    def open_single_signal_operation(self):
+        self.window.destroy()
+        x = Ss.SingleSignalOperations()
+        x.run()
 
-menu_bar = tk.Menu(root)
-root.config(menu=menu_bar)
+    def open_multiple_signal_operation(self):
+        self.window.destroy()
+        x = Ms.MultiSignalOperations()
 
-file_menu = tk.Menu(menu_bar, tearoff=0)
-menu_bar.add_cascade(label="File", menu=file_menu)
-file_menu.add_separator()
-file_menu.add_command(label="Exit", command=root.quit)
+    def opem_freq_domain(self):
+        self.window.destroy()
+        x = freq_domain.FrequencyDomain()
+        x.run()
 
-# create a label frame to group the input fields together
-input_frame = tk.LabelFrame(root, text="Signal Parameters", font=("Arial", 14), bg='#F5F5F5', padx=20, pady=20)
-input_frame.pack(pady=20)
+    def open_quantizer(self):
+        self.window.destroy()
+        x = quant_sig.SignalQuantizer().run_quantization()
 
-# # signal type
-
-# signal_type_label = tk.Label(input_frame, text="Signal Type:", font=("Arial", 14), bg='#F5F5F5')
-# signal_type_label.pack(pady=10)
-# signal_type = tk.StringVar(input_frame)
-# signal_type.set("Continuous")
-# signal_type_menu = tk.OptionMenu(input_frame, signal_type, "Continuous", "Discrete")
-# signal_type_menu.config(font=("Arial", 12))
-# signal_type_menu.pack()
-
-# signal choice
-
-signal_choice_label = tk.Label(input_frame, text="Signal Generation:", font=("Arial", 14), bg='#F5F5F5')
-signal_choice_label.pack(pady=10)
-signal_choice = tk.StringVar(input_frame)
-signal_choice.set("Sin")
-signal_choice_menu = tk.OptionMenu(input_frame, signal_choice, "Sin", "Cos")
-signal_choice_menu.config(font=("Arial", 12))
-signal_choice_menu.pack()
+    def run(self):
+        self.window.mainloop()
 
 
-
-# amplitude
-
-amplitude_label = tk.Label(input_frame, text="Amplitude:", font=("Arial", 14), bg='#F5F5F5')
-amplitude_label.pack(pady=10)
-amplitude_entry = tk.Entry(input_frame, font=("Arial", 12))
-amplitude_entry.pack()
-
-# phase shift
-
-phase_shift_label = tk.Label(input_frame, text="Phase Shift:", font=("Arial", 14), bg='#F5F5F5')
-phase_shift_label.pack(pady=10)
-phase_shift_entry = tk.Entry(input_frame, font=("Arial", 12))
-phase_shift_entry.pack()
-
-# analog frequency
-
-analog_freq_label = tk.Label(input_frame, text="Analog Frequency (Hz):", font=("Arial", 14), bg='#F5F5F5')
-analog_freq_label.pack(pady=10)
-analog_freq_entry = tk.Entry(input_frame, font=("Arial", 12))
-analog_freq_entry.pack()
-
-# sample rate
-
-sample_rate_label = tk.Label(input_frame, text="Sample Rate (Hz):", font=("Arial", 14), bg='#F5F5F5')
-sample_rate_label.pack(pady=10)
-sample_rate_entry = tk.Entry(input_frame, font=("Arial", 12))
-sample_rate_entry.pack()
-
-# generate button
-
-def validate_input():
-    try:
-        float(amplitude_entry.get())
-        float(phase_shift_entry.get())
-        float(analog_freq_entry.get())
-        float(sample_rate_entry.get())
-    except ValueError:
-        tk.messagebox.showerror("Error", "Invalid input value")
-        return False
-    return True
-
-def generate_signal():
-    if validate_input():
-        gs.sinusoidal(float(amplitude_entry.get()),
-                       float(phase_shift_entry.get()),
-                       float(analog_freq_entry.get()),
-                       float(sample_rate_entry.get()),
-                       signal_choice.get())
-
-generate_button = tk.Button(root, text="Generate Signal", command=generate_signal)
-generate_button.config(font=("Arial", 14), bg='#4CAF50', fg='#FFFFFF', padx=20, pady=10)
-generate_button.pack(pady=20)
-
-# button to open file and draw signal in canvas discrete and continuous
-
-open_file_button = tk.Button(root, text="Open File", command=lambda: sio.choose_file())
-open_file_button.config(font=("Arial", 14), bg='#4CAF50', fg='#FFFFFF', padx=20, pady=10)
-open_file_button.pack(pady=20)
-
-
-# run
-root.mainloop()
+if __name__ == "__main__":
+    window = MainWindow()
+    window.run()
