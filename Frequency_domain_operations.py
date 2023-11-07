@@ -14,14 +14,14 @@ def plot_fourier(signal, sampling_frequency):
 
     # Plot frequency versus amplitude
     plt.subplot(2, 1, 1)
-    plt.plot(frequency, amplitude_spectrum)
+    plt.bar(frequency, amplitude_spectrum)
     plt.xlabel('Frequency (Hz)')
     plt.ylabel('Amplitude')
     plt.title('Frequency vs Amplitude')
 
     # Plot frequency versus phase
     plt.subplot(2, 1, 2)
-    plt.plot(frequency, phase_spectrum)
+    plt.bar(frequency, phase_spectrum)
     plt.xlabel('Frequency (Hz)')
     plt.ylabel('Phase (radians)')
     plt.title('Frequency vs Phase')

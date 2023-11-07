@@ -14,10 +14,10 @@ class MainWindow:
         self.create_widgets()
 
     def create_widgets(self):
-        button_style = {"font": ("Arial", 14), "bg": "#4CAF50", "fg": "white", "padx": 10, "pady": 5, "bd": 0, "width": 20}
+        button_style = {"font": ("Arial", 14), "bg": "#4CAF50", "fg": "white", "padx": 10, "pady": 5, "bd": 0, "width": 25}
 
         # Create Task1 Button
-        button1 = tk.Button(self.window, text="Signal Generation", command=self.open_signal_generation, **button_style)
+        button1 = tk.Button(self.window, text="Sinusoidal Signal Generation", command=self.open_signal_generation, **button_style)
         button1.pack(pady=10)
 
         # Create Single Signal Operation Button
@@ -32,9 +32,8 @@ class MainWindow:
         button4 = tk.Button(self.window, text="Quantizer Signal", command=self.open_quantizer, **button_style)
         button4.pack(pady=10)
 
-
         # Create New Button
-        button5 = tk.Button(self.window, text="Frequency Domain", command=self.opem_freq_domain, **button_style)
+        button5 = tk.Button(self.window, text="Frequency Domain", command=self.open_freq_domain, **button_style)
         button5.pack(pady=10)
 
     def open_signal_generation(self):
@@ -51,7 +50,7 @@ class MainWindow:
         self.window.destroy()
         x = Ms.MultiSignalOperations()
 
-    def opem_freq_domain(self):
+    def open_freq_domain(self):
         self.window.destroy()
         x = freq_domain.FrequencyDomain()
         x.run()

@@ -1,9 +1,8 @@
 import tkinter as tk
-from tkinter import filedialog, messagebox
 import signal_io as sio
-import Arithmatic_operations as op
 import main as t2
 import Frequency_domain_operations as freq_op
+import FourierTransform as ft
 
 class FrequencyDomain:
 
@@ -37,7 +36,7 @@ class FrequencyDomain:
     def modify_signal(self, signal, amplitude, phase):
         # Modify the amplitude and phase of the signal components
         try:
-            modified_signal = freq_op.apply_modification(signal, amplitude, phase)
+            modified_signal = ft.FourierTransform().modify_signal(signal, amplitude, phase)
             return modified_signal
         except Exception as e:
             tk.messagebox.showerror("Error", str(e))
@@ -45,7 +44,15 @@ class FrequencyDomain:
 
     def transform_signal(self, signal, freq):
         try:
-            transformed_signal = freq_op.plot_fourier(signal, freq)
+            transformed_signal = ft.FourierTransform().DFT(signal, freq)
+            return transformed_signal
+        except Exception as e:
+            tk.messagebox.showerror("Error", str(e))
+            return None
+
+    def reconstruct_signal(self, signal):
+        try:
+            transformed_signal = ft.FourierTransform().IDFT(signal)
             return transformed_signal
         except Exception as e:
             tk.messagebox.showerror("Error", str(e))
@@ -60,8 +67,8 @@ class FrequencyDomain:
 
         button_style = {"font": ("Arial", 14), "bg": "#4CAF50", "fg": "white", "padx": 10, "pady": 5, "bd": 0}
 
-        load_frame = tk.LabelFrame(root, text="Signal Processing", font=("Arial", 14), bg='#F5F5F5', padx=20, pady=20)
-        load_frame.pack(pady=20)
+        load_frame = tk.LabelFrame(root, text="Signal Processing", font=("Arial", 14), bg='#F5F5F5', padx=20, pady=10)
+        load_frame.pack(pady=10)
         load_button = tk.Button(load_frame, text="Load Signal", command=self.load_signal, **button_style)
         load_button.grid(row=0, column=0, padx=5, pady=5)
 
@@ -69,8 +76,8 @@ class FrequencyDomain:
         save_button.grid(row=0, column=1, padx=5, pady=5)
 
         transform_frame = tk.LabelFrame(root, text="Fourier transform", font=("Arial", 14), bg='#F5F5F5', padx=20,
-                                        pady=20)
-        transform_frame.pack(pady=20)
+                                        pady=10)
+        transform_frame.pack(pady=10)
 
         transform_label = tk.Label(transform_frame, text="Frequency:", font=("Arial", 14), bg="#f2f2f2")
         transform_label.grid(row=0, column=0, padx=5, pady=5)
@@ -91,8 +98,30 @@ class FrequencyDomain:
         transform_button = tk.Button(transform_frame, text="Transform Signal", command=transform_signal, **button_style)
         transform_button.grid(row=2, columnspan=2, pady=10)
 
-        modify_frame = tk.LabelFrame(root, text="Signal Modify", font=("Arial", 14), bg='#F5F5F5', padx=20, pady=20)
-        modify_frame.pack(pady=20)
+        ################################################################################################
+        
+        itransform_frame = tk.LabelFrame(root, text="Inverse Fourier transform", font=("Arial", 14), bg='#F5F5F5', padx=20,
+                                        pady=10)
+        itransform_frame.pack(pady=10)
+
+        def itransform_signal():
+            try:
+                trasform_signal = self.reconstruct_signal(self.signal)
+                if trasform_signal:
+                    self.signal = trasform_signal
+                    tk.messagebox.showinfo("Success", "Signal transformed successfully")
+            except ValueError:
+                tk.messagebox.showerror("Error", "Invalid amplitude value")
+
+        itransform_button = tk.Button(itransform_frame, text="Reconstruct Signal", command=itransform_signal, **button_style)
+        itransform_button.grid(row=2, columnspan=2, pady=10)
+        
+        
+        ################################################################################################
+
+
+        modify_frame = tk.LabelFrame(root, text="Signal Modify", font=("Arial", 14), bg='#F5F5F5', padx=20, pady=10)
+        modify_frame.pack(pady=10)
 
         amplitude_label = tk.Label(modify_frame, text="Amplitude:", font=("Arial", 14), bg="#f2f2f2")
         amplitude_label.grid(row=0, column=0, padx=5, pady=5)
@@ -121,8 +150,8 @@ class FrequencyDomain:
         modify_button = tk.Button(modify_frame, text="Modify Signal", command=validate_modify, **button_style)
         modify_button.grid(row=2, columnspan=2, pady=10)
 
-        load_polar = tk.LabelFrame(root, text="Signal Load", font=("Arial", 14), bg='#F5F5F5', padx=20, pady=20)
-        load_polar.pack(pady=20)
+        load_polar = tk.LabelFrame(root, text="Signal Load", font=("Arial", 14), bg='#F5F5F5', padx=20, pady=10)
+        load_polar.pack(pady=10)
         load_button_polar = tk.Button(load_polar, text="Load Text", command=self.load_signal, **button_style)
         load_button_polar.pack()
 

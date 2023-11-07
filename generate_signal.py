@@ -45,7 +45,6 @@ def sinusoidal(amplitude: float, phase_shift: float,
     plt.grid(True)
     plt.show()
 
-
 def continuous(points: List[tuple]):
     x = [point[0] for point in points]
     y = [point[1] for point in points]
