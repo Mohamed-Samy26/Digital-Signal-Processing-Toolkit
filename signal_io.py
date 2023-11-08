@@ -1,7 +1,5 @@
 import tkinter as tk
 from tkinter import filedialog
-from matplotlib import pyplot as plt
-from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from SignalData import SignalData
 import generate_signal as gs
@@ -17,12 +15,17 @@ def read_signal(file_path: str):
         if signal_type == "TIME":
             for line in signal_data[3:]:                
                 index, amplitude = line.strip().split(' ')
-                points.append((float(index), float(amplitude)))
+                index = index.replace('f', '')
+                amplitude = amplitude.replace('f', '')
+                points.append((int(index), float(amplitude)))
                 if len(points) == num_samples:
                     break
         else:
-            for line in signal_data[3:]:
-                freq, amplitude, phase = line.strip().split(' ')
+            for index, line in enumerate(signal_data[3:]):
+                amplitude, phase = line.strip().split(' ')
+                amplitude = amplitude.replace('f', '')
+                phase = phase.replace('f', '')
+                freq = index / num_samples
                 points.append((float(freq), float(amplitude), float(phase)))
                 if len(points) == num_samples:
                     break
@@ -37,9 +40,19 @@ def write_signal(file_path: str, signal_data: SignalData):
     with open(file_path, 'w') as file:
         file.write(f"{1 if signal_data.signal_type == 'FREQ' else 0}\n")
         file.write(f"{1 if signal_data.is_periodic else 0}\n")
-        file.write(f"{signal_data.num_samples}\n")
-        for point in signal_data.points:
-            file.write(f"{point[0]} {point[1]}\n")
+        file.write(f"{len(signal_data.points)}\n")
+                
+        if signal_data.signal_type == "TIME":
+            for index, amplitude in signal_data.points:
+                file.write(f"{index} {amplitude}\n")
+        else:
+            for freq, amplitude, phase in signal_data.points:
+                file.write(f"{amplitude} {phase}\n")
+
+def write_signal_file(signal_data: SignalData):
+    file_path = filedialog.asksaveasfilename(filetypes=[('Text Files', '*.txt')])
+    if file_path:
+        write_signal(file_path, signal_data)
 
 def choose_file():
     file_path = filedialog.askopenfilename(filetypes=[('Text Files', '*.txt')])
