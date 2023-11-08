@@ -24,7 +24,6 @@ class FourierTransform:
                 amplitudes[k] += value
 
         frequencies = np.arange(N) * (sampling_frequency / N)
-        print(amplitudes)
         new_points = [(freq, abs(val), cmath.phase(val)) for freq, val in zip(frequencies, amplitudes)]
         new_signal = SignalData("FREQ", signal.is_periodic, new_points)
         return new_signal
@@ -45,10 +44,11 @@ class FourierTransform:
                 re += amp * np.cos(angle + phase)
                 im += amp * np.sin(angle + phase)
             
-            value = (n, (re + im * 1j))
+            value = (n, (re + im * 1j)/N)
             points.append(value)
         
         return SignalData("TIME", signal.is_periodic, points)
+    
     
     def modify_index(self, signal:SignalData, index:int, new_amplitude:float, new_phase:float):
         

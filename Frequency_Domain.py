@@ -9,6 +9,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import FourierTransform as ft
 import PlotDisplay as pd
 
+import signalcompare as sc
+
 class FrequencyDomain:
 
     def __init__(self):
@@ -21,7 +23,8 @@ class FrequencyDomain:
         try:
             self.signal = sio.read_signal_file()
         except Exception as e:
-            tk.messagebox.showerror("Error", "Invalid file")
+            print(e)
+            tk.messagebox.showerror("Error", "Invalid file, error "+str(e))
 
     def save_signal(self):
         # Save signal to file
@@ -52,7 +55,6 @@ class FrequencyDomain:
         try:
             transformed_signal = ft.FourierTransform().DFT(signal, freq)
             frequencies = [point[0] for point in transformed_signal.points]
-            print(frequencies)
             return transformed_signal
         except Exception as e:
             tk.messagebox.showerror("Error", str(e))
@@ -198,10 +200,38 @@ class FrequencyDomain:
 
         ################################################################################################
         
-        # load_polar = tk.LabelFrame(control_frame, text="Signal Load", font=("Arial", 14), bg='#F5F5F5', padx=20, pady=10)
-        # load_polar.pack(pady=5)
-        # load_button_polar = tk.Button(load_polar, text="Load Text", command=self.load_signal, **button_style)
-        # load_button_polar.pack()
+        def validate_test():
+            try:
+                test_signal = sio.read_signal_file()
+                _, amplitudes1, phase1 = self.signal.get_signal()
+                _, amplitudes2, phase2 = test_signal.get_signal()
+                amplitudes1 = [round(x, 8) for x in amplitudes1]
+                amplitudes2 = [round(x, 8) for x in amplitudes2]           
+                    
+                    
+                b1 = sc.SignalComapreAmplitude(amplitudes1, amplitudes2) # 0.905007438022
+                b2= True
+                
+                if self.signal.signal_type == "FREQ":
+                    phase1 = [round(x, 8) for x in phase1]
+                    phase2 = [round(x, 8) for x in phase2]
+                    b2 = sc.SignalComaprePhaseShift(phase1, phase2)  
+                
+                if b1 and b2:
+                    print("Signal compared successfully")
+                    tk.messagebox.showinfo("Success", "Tests passed successfully")
+    
+                else:
+                    print("Signal compared failed")
+                    tk.messagebox.showinfo("Success", f"Tests failed Amplitude passed: {b1}, phase passed: {b2}")
+            except Exception as e:
+                tk.messagebox.showerror("Error", "Invalid amplitude or phase value, error: "+str(e))
+            
+        
+        testing = tk.LabelFrame(control_frame, text="Compare signal", font=("Arial", 14), bg='#F5F5F5', padx=20, pady=10)
+        testing.pack(pady=5)
+        load_button_polar = tk.Button(testing, text="Load Test Signal", command=validate_test, **button_style)
+        load_button_polar.pack()
 
         root.mainloop()
         t2.MainWindow()

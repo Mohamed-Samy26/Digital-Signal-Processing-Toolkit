@@ -13,8 +13,9 @@ def read_signal(file_path: str):
         num_samples = int(signal_data[2].strip())
         
         if signal_type == "TIME":
-            for line in signal_data[3:]:                
-                index, amplitude = line.strip().split(' ')
+            for line in signal_data[3:]:
+                # split the line on ',' or ' ' into index and amplitude        
+                index, amplitude = line.strip().replace(',', ' ').split(' ')
                 index = index.replace('f', '')
                 amplitude = amplitude.replace('f', '')
                 points.append((int(index), float(amplitude)))
@@ -22,7 +23,7 @@ def read_signal(file_path: str):
                     break
         else:
             for index, line in enumerate(signal_data[3:]):
-                amplitude, phase = line.strip().split(' ')
+                amplitude, phase = line.strip().replace(',', ' ').split(' ')
                 amplitude = amplitude.replace('f', '')
                 phase = phase.replace('f', '')
                 freq = index / num_samples
@@ -50,7 +51,7 @@ def write_signal(file_path: str, signal_data: SignalData):
                 file.write(f"{amplitude} {phase}\n")
 
 def write_signal_file(signal_data: SignalData):
-    file_path = filedialog.asksaveasfilename(filetypes=[('Text Files', '*.txt')])
+    file_path = filedialog.asksaveasfilename(filetypes=[('Text Files', '*.txt')], defaultextension='.txt')
     if file_path:
         write_signal(file_path, signal_data)
 
