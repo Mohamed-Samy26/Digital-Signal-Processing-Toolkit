@@ -1,11 +1,8 @@
-import tkinter as tk
-
 from matplotlib import pyplot as plt
+
 import signal_io as sio
 import main as t2
 import tkinter as tk
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import FourierTransform as ft
 import PlotDisplay as pd
 
@@ -68,6 +65,50 @@ class FrequencyDomain:
             tk.messagebox.showerror("Error", str(e))
             return None
 
+    def plot_signal(self, signal, title):
+        plt.figure()
+        plt.plot(signal)
+        plt.title(title)
+        plt.xlabel('Sample Index')
+        plt.ylabel('Amplitude')
+        plt.show()
+
+    def compute_dct(self):
+        try:
+            if not self.validate_input():
+                return
+
+            # Perform DCT on the current signal
+            dct_result = ft.FourierTransform().custom_DCT(self.signal)
+
+            # Display the DCT result
+
+            # Allow the user to choose the first m coefficients to save in a txt file
+            m = tk.simpledialog.askinteger("DCT Coefficients", "Enter the number of coefficients to save:", minvalue=1)
+            if m is not None:
+                filename = tk.filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
+                if filename:
+                    ft.FourierTransform().save_coefficients_to_file(dct_result, filename, m)
+                    tk.messagebox.showinfo("Success", f"{m} DCT coefficients saved to {filename}")
+        except Exception as e:
+            tk.messagebox.showerror("Error", f"Failed to compute DCT: {str(e)}")
+
+    def remove_dc_component(self):
+        try:
+            if not self.validate_input():
+                return
+
+            # Perform IDFT without DC component
+            idft_result_without_dc = ft.FourierTransform().IDFT_without_DC(self.signal)
+
+            # Display the result
+
+            self.old_signal = self.signal
+            self.signal = idft_result_without_dc
+            tk.messagebox.showinfo("Success", "DC component removed successfully")
+        except Exception as e:
+            tk.messagebox.showerror("Error", f"Failed to remove DC component: {str(e)}")
+
     def run(self):
         # Create GUI window
         root = tk.Tk()
@@ -76,7 +117,7 @@ class FrequencyDomain:
         root.configure(bg="white")
         root.grid_columnconfigure(0, weight=1)
         root.grid_columnconfigure(1, weight=5)
-        
+
         control_frame = tk.LabelFrame(root, text="Signal Controls", font=("Arial", 14), bg='#F5F5F5', padx=5, pady=5)
         control_frame.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")  # Using grid instead of pack
 
@@ -84,7 +125,7 @@ class FrequencyDomain:
         signal_frame.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")  # Using grid instead of pack
 
         canva = pd.PlotDisplay(signal_frame)
-        
+
         def update_canvas():
             if self.signal:
                 canva.update_plot(self.signal)
@@ -187,8 +228,8 @@ class FrequencyDomain:
                 
                 modified_signal = self.modify_signal(self.signal, index, amplitude, phase)
                 if modified_signal:
+                    self.old_signal = self.signal
                     self.signal = modified_signal
-                    self.old_signal = modified_signal
                     # modified_signal.plot_signal()
                     canva.compare_signals(self.old_signal, self.signal)
                     tk.messagebox.showinfo("Success", "Signal modified successfully")
@@ -233,8 +274,15 @@ class FrequencyDomain:
         load_button_polar = tk.Button(testing, text="Load Test Signal", command=validate_test, **button_style)
         load_button_polar.pack()
 
-        root.mainloop()
-        t2.MainWindow()
+        dct_button = tk.Button(transform_frame, text="Compute DCT", command=self.compute_dct, **button_style)
+        dct_button.grid(row=3, columnspan=2, pady=5)
+
+        remove_dc_button = tk.Button(itransform_frame, text="Remove DC Component", command=self.remove_dc_component,
+                                     **button_style)
+        remove_dc_button.grid(row=3, columnspan=2, pady=5)
+
+        self.root.mainloop()
+        t2.MainWindow().run()
 
 
 if __name__ == "__main__":
