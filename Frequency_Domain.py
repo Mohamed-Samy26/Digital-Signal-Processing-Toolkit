@@ -1,5 +1,5 @@
 from matplotlib import pyplot as plt
-
+import comparesignal2 as cs
 import signal_io as sio
 import main as t2
 import tkinter as tk
@@ -80,9 +80,10 @@ class FrequencyDomain:
 
             # Perform DCT on the current signal
             dct_result = ft.FourierTransform().custom_DCT(self.signal)
-
+            #cs.SignalSamplesAreEqual(file_name='task4/DCT/DCT_output.txt',dct_result.points)
+            print(dct_result)
             # Display the DCT result
-
+            self.plot_signal(dct_result.points,"DCT Result")
             # Allow the user to choose the first m coefficients to save in a txt file
             m = tk.simpledialog.askinteger("DCT Coefficients", "Enter the number of coefficients to save:", minvalue=1)
             if m is not None:
@@ -102,9 +103,11 @@ class FrequencyDomain:
             idft_result_without_dc = ft.FourierTransform().IDFT_without_DC(self.signal)
 
             # Display the result
+            self.plot_signal(idft_result_without_dc.points, "DC Removal")
 
             self.old_signal = self.signal
             self.signal = idft_result_without_dc
+            #cs.SignalSamplesAreEqual(file_name='task4/Remove DC component/DC_component_output.txt',self.signal)
             tk.messagebox.showinfo("Success", "DC component removed successfully")
         except Exception as e:
             tk.messagebox.showerror("Error", f"Failed to remove DC component: {str(e)}")
