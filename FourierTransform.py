@@ -88,10 +88,12 @@ class FourierTransform:
         amplitudes = np.zeros(N, dtype=complex)
 
         for k in range(N):
+            sum_result = 0
             for n in range(N):
-                angle = cmath.pi * k * (2 * n + 1) / (2 * N)
-                value = signal.points[n][1] * cmath.exp(-1j * angle)
-                amplitudes[k] += value
+                term = signal.points[n][1] * cmath.cos((cmath.pi* (2 * n - 1) * (2 * k -1)) / (4 * N))
+                sum_result += term
+
+            amplitudes[k] = np.sqrt(2 / N) * sum_result
 
         amplitudes[m:] = 0
 
@@ -99,6 +101,7 @@ class FourierTransform:
         new_points = [(freq, abs(val), cmath.phase(val)) for freq, val in zip(frequencies, amplitudes)]
         new_signal = SignalData("FREQ", signal.is_periodic, new_points)
         return new_signal
+
 
     def save_coefficients_to_file(self, signal: SignalData, filename: str, m: Optional[int] = None):
         if m is None:
@@ -110,22 +113,17 @@ class FourierTransform:
             for coefficient in coefficients:
                 file.write(f"{coefficient.real}\t{coefficient.imag}\n")
 
-    def IDFT_without_DC(self, signal: SignalData) -> SignalData:
+    def remove_dc_component(self, signal: SignalData) -> SignalData:
         if signal.signal_type == "TIME":
-            return signal
+            # Applying DFT to the time domain signal
+            freq_domain_signal = self.DFT(signal)
 
-        N = len(signal.points)
-        points = []
+            # Setting the DC component to 0 in the frequency domain signal
+            freq_domain_signal.points[0] = (freq_domain_signal.points[0][0], 0, freq_domain_signal.points[0][2])
 
-        for n in range(N):
-            re = 0
-            im = 0
-            for k, (freq, amp, phase) in enumerate(signal.points[1:], start=1):
-                angle = 2 * np.pi * k * n / N
-                re += amp * np.cos(angle + phase)
-                im += amp * np.sin(angle + phase)
+            # Applying IDFT to the modified frequency domain signal
+            new_time_domain_signal = self.IDFT(freq_domain_signal)
 
-            value = (n, re + im * 1j)
-            points.append(value)
-
-        return SignalData("TIME", signal.is_periodic, points)
+            return new_time_domain_signal
+        else:
+            raise ValueError("DC component can only be removed from a time domain signal")

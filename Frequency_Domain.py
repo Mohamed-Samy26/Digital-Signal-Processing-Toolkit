@@ -80,8 +80,8 @@ class FrequencyDomain:
 
             # Perform DCT on the current signal
             dct_result = ft.FourierTransform().custom_DCT(self.signal)
-            #cs.SignalSamplesAreEqual(file_name='task4/DCT/DCT_output.txt',dct_result.points)
-            print(dct_result)
+            cs.SignalSamplesAreEqual(file_name='task4/DCT/DCT_output.txt',samples=dct_result.points)
+
             # Display the DCT result
             self.plot_signal(dct_result.points,"DCT Result")
             # Allow the user to choose the first m coefficients to save in a txt file
@@ -100,14 +100,14 @@ class FrequencyDomain:
                 return
 
             # Perform IDFT without DC component
-            idft_result_without_dc = ft.FourierTransform().IDFT_without_DC(self.signal)
+            idft_result_without_dc = ft.FourierTransform().remove_dc_component(self.signal)
 
             # Display the result
             self.plot_signal(idft_result_without_dc.points, "DC Removal")
 
             self.old_signal = self.signal
             self.signal = idft_result_without_dc
-            #cs.SignalSamplesAreEqual(file_name='task4/Remove DC component/DC_component_output.txt',self.signal)
+            cs.SignalSamplesAreEqual(file_name='task4/Remove DC component/DC_component_output.txt',samples=self.signal.points)
             tk.messagebox.showinfo("Success", "DC component removed successfully")
         except Exception as e:
             tk.messagebox.showerror("Error", f"Failed to remove DC component: {str(e)}")
