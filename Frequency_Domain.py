@@ -285,6 +285,14 @@ class FrequencyDomain:
                                      **button_style)
         remove_dc_button.grid(row=3, columnspan=2, pady=5)
 
+        
+        def close():
+            self.root.quit()
+            self.root.destroy()
+            
+        # Close the window when the user presses the X button on the window
+        self.root.protocol("WM_DELETE_WINDOW", close)
+        # Run the GUI
         self.root.mainloop()
         t2.MainWindow().run()
 

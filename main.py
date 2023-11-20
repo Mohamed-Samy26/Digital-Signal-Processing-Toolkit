@@ -10,7 +10,6 @@ class MainWindow:
         self.window.title("Signal Processor")
         self.window.geometry("400x500")
         self.window.configure(bg="#f2f2f2")
-
         self.create_widgets()
 
     def create_widgets(self):
@@ -59,7 +58,12 @@ class MainWindow:
         self.window.destroy()
         x = quant_sig.SignalQuantizer().run_quantization()
 
+    def close(self):
+        self.window.quit()
+        self.window.destroy()
+        
     def run(self):
+        self.window.protocol("WM_DELETE_WINDOW", self.close)
         self.window.mainloop()
 
 
