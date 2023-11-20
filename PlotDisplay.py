@@ -9,12 +9,17 @@ class PlotDisplay:
         self.master = master
         self.figure, self.axes = plt.subplots(2, 1)  # Two subplots
         # set figure size to fit the window
-        self.figure.set_figheight(6)
-        self.figure.set_figwidth(8)
+        self.SPACE_FACTOR = 0.9
+        self.FIG_WIDTH = 8
+        self.figure.set_figheight(7)
+        self.figure.set_figwidth(self.FIG_WIDTH)
         
         self.canvas = FigureCanvasTkAgg(self.figure, master=self.master)
         self.canvas.get_tk_widget().pack()
 
+    def calculate_bar_width(self, num_bars):
+        return (self.FIG_WIDTH / num_bars) * (1 - self.SPACE_FACTOR)
+    
     def update_plot(self, signal:SignalData):
         """Update the plot with the given signal data"""
         self.axes[0].clear()  # Clear the previous plot
@@ -29,13 +34,14 @@ class PlotDisplay:
             self.axes[1].axis('off')
         elif signal.signal_type == "FREQ":
             # Plot frequency versus amplitude
-            self.axes[0].bar(Xn, Yn)
+            width = self.calculate_bar_width(len(Xn))
+            self.axes[0].bar(Xn, Yn, width=width)
             self.axes[0].set_xlabel('Frequency (Hz)')
             self.axes[0].set_ylabel('Amplitude')
             self.axes[0].set_title('Frequency vs Amplitude')
             
             # Plot frequency versus phase
-            self.axes[1].bar(Xn, phase)
+            self.axes[1].bar(Xn, phase, width=width)
             self.axes[1].set_xlabel('Frequency (Hz)')
             self.axes[1].set_ylabel('Phase (radians)')
             self.axes[1].set_title('Frequency vs Phase')
@@ -65,15 +71,16 @@ class PlotDisplay:
     
         elif signal1.signal_type == "FREQ":
             # Plot frequency versus amplitude
-            self.axes[0].bar(Xn1, Yn1, color='red')
-            self.axes[0].bar(Xn2, Yn2, color='green')
+            width = self.calculate_bar_width(len(Xn1))
+            self.axes[0].bar(Xn1, Yn1, color='blue', width=width)
+            self.axes[0].bar(Xn2, Yn2, color='green', witdh=width)
             self.axes[0].set_xlabel('Frequency (Hz)')
             self.axes[0].set_ylabel('Amplitude')
             self.axes[0].set_title('Frequency vs Amplitude')
             
             # Plot frequency versus phase
-            self.axes[1].bar(Xn1, phase1)
-            self.axes[1].bar(Xn2, phase2)
+            self.axes[1].bar(Xn1, phase1, color='blue', width=width)
+            self.axes[1].bar(Xn2, phase2, color='green')
             self.axes[1].set_xlabel('Frequency (Hz)')
             self.axes[1].set_ylabel('Phase (radians)')
             self.axes[1].set_title('Frequency vs Phase')

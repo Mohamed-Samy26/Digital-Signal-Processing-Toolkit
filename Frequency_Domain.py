@@ -115,13 +115,14 @@ class FrequencyDomain:
     def run(self):
         # Create GUI window
         root = tk.Tk()
+        self.root = root
         root.title("Frequency Domain Signal Processing")
-        root.geometry("1100x700")
+        root.geometry("1100x750")
         root.configure(bg="white")
         root.grid_columnconfigure(0, weight=1)
         root.grid_columnconfigure(1, weight=5)
 
-        control_frame = tk.LabelFrame(root, text="Signal Controls", font=("Arial", 14), bg='#F5F5F5', padx=5, pady=5)
+        control_frame = tk.LabelFrame(root, text="Signal Controls", font=("Arial", 10), bg='#F5F5F5', padx=5, pady=5)
         control_frame.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")  # Using grid instead of pack
 
         signal_frame = tk.LabelFrame(root, text="Signal preview", font=("Arial", 14), bg='#F5F5F5', padx=5, pady=5)
@@ -133,7 +134,7 @@ class FrequencyDomain:
             if self.signal:
                 canva.update_plot(self.signal)
 
-        button_style = {"font": ("Arial", 14), "bg": "#4CAF50", "fg": "white", "padx": 10, "pady": 5, "bd": 0}
+        button_style = {"font": ("Arial", 12), "bg": "#4CAF50", "fg": "white", "padx": 10, "pady": 5, "bd": 0}
 
         def load_signal():
             self.load_signal()
