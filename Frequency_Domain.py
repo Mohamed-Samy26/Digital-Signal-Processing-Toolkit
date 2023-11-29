@@ -132,7 +132,7 @@ class FrequencyDomain:
 
         def update_canvas():
             if self.signal:
-                canva.update_plot(self.signal)
+                canva.plot_single(self.signal)
 
         button_style = {"font": ("Arial", 12), "bg": "#4CAF50", "fg": "white", "padx": 10, "pady": 5, "bd": 0}
 

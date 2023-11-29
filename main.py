@@ -34,6 +34,10 @@ class MainWindow:
         # Create New Button
         button5 = tk.Button(self.window, text="Frequency Domain", command=self.open_freq_domain, **button_style)
         button5.pack(pady=10)
+        
+        # create time domain button
+        button6 = tk.Button(self.window, text="Time Domain", command=self.open_time_domain, **button_style)
+        button6.pack(pady=10)
 
     def open_signal_generation(self):
         self.window.destroy()
@@ -58,6 +62,11 @@ class MainWindow:
         self.window.destroy()
         x = quant_sig.SignalQuantizer().run_quantization()
 
+    def open_time_domain(self):
+        self.window.destroy()
+        x = freq_domain.FrequencyDomain()
+        x.run_time_domain()
+        
     def close(self):
         self.window.quit()
         self.window.destroy()
