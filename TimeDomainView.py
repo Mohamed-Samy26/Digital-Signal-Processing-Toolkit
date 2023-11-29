@@ -7,6 +7,7 @@ import signal_io as sio
 import main as t2
 import DerivativeSignal as ds
 from Test_Shift_Fold_Signal import Shift_Fold_Signal
+from comparesignals import SignalSamplesAreEqual
 
 class TimeDomainView:
     
@@ -40,13 +41,16 @@ class TimeDomainView:
         else:
             return True
 
-    def plot_signal(self, signal, title):
-        plt.figure()
-        plt.plot(signal)
-        plt.title(title)
-        plt.xlabel('Sample Index')
-        plt.ylabel('Amplitude')
-        plt.show()
+    def plot_signal(self):
+        # Plot the current signal
+        try:
+            if not self.validate_input():
+                return
+
+            # Plot the signal
+            self.signal.plot_signal()
+        except Exception as e:
+            tk.messagebox.showerror("Error", f"Failed to plot signal: {str(e)}")
 
     def smooth_signal(self, window_size):
         try:
@@ -109,7 +113,7 @@ class TimeDomainView:
         root = tk.Tk()
         self.root = root
         root.title("Time Domain Signal Processing")
-        root.geometry("1200x750")
+        root.geometry("1350x750")
         root.configure(bg="white")
         root.grid_columnconfigure(0, weight=1)
         root.grid_columnconfigure(1, weight=5)
@@ -139,6 +143,9 @@ class TimeDomainView:
 
         save_button = tk.Button(load_frame, text="Save Signal", command=self.save_signal, **button_style)
         save_button.grid(row=0, column=1, padx=5, pady=5)
+        
+        plot_button = tk.Button(load_frame, text="Plot Signal", command=lambda: self.plot_signal(), **button_style)
+        plot_button.grid(row=0, column=2, padx=5, pady=5)
 
         ################################################################################################
         
@@ -208,7 +215,7 @@ class TimeDomainView:
             except ValueError:
                 tk.messagebox.showerror("Error", "Invalid shift")
                 
-        advance_button = tk.Button(shift_frame, text="Advance Signal", command=validate_advance, **button_style)
+        advance_button = tk.Button(shift_frame, text="Advance Signal (-)", command=validate_advance, **button_style)
         advance_button.grid(row=1, columnspan=2, pady=5)
         
         def validate_delay():
@@ -220,7 +227,7 @@ class TimeDomainView:
             except ValueError:
                 tk.messagebox.showerror("Error", "Invalid shift")
                 
-        delay_button = tk.Button(shift_frame, text="Delay Signal", command=validate_delay, **button_style)
+        delay_button = tk.Button(shift_frame, text="Delay Signal (+)", command=validate_delay, **button_style)
         delay_button.grid(row=2, columnspan=2, pady=5)
         
         
@@ -235,7 +242,7 @@ class TimeDomainView:
         test_frame.pack(pady=5)
         
         test_button = tk.Button(test_frame, text="Test Derivative", command=test_derivative, **button_style)
-        test_button.grid(row=0, columnspan=2, pady=5)
+        test_button.grid(row=0, column=0, pady=5)
         
         def test_shift():
             x, y, z = self.signal.get_signal()
@@ -243,7 +250,15 @@ class TimeDomainView:
             Shift_Fold_Signal(file_name=path ,Your_indices=x ,Your_samples=y)
             
         test_button2 = tk.Button(test_frame, text="Test Shift", command=test_shift, **button_style)
-        test_button2.grid(row=1, columnspan=2, pady=5)
+        test_button2.grid(row=0, column=1, pady=5, padx=5)
+        
+        def test_compare():
+            x, y, z = self.signal.get_signal()
+            path = sio.get_file_path()
+            SignalSamplesAreEqual(file_name=path ,indices=x ,samples=y)
+            
+        test_button3 = tk.Button(test_frame, text="Test Compare", command=test_compare, **button_style)
+        test_button3.grid(row=1, columnspan=2, pady=5)
 
         ################################################################################################
         
