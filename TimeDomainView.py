@@ -5,6 +5,8 @@ import tkinter as tk
 import PlotDisplay as pd
 import signal_io as sio
 import main as t2
+import DerivativeSignal as ds
+from Test_Shift_Fold_Signal import Shift_Fold_Signal
 
 class TimeDomainView:
     
@@ -180,7 +182,7 @@ class TimeDomainView:
         fold_frame.pack(pady=5)
         
         def validate_fold():
-            self.fold_signal()
+            self.fold_signal()            
             
         fold_button = tk.Button(fold_frame, text="Fold Signal", command=validate_fold, **button_style)
         fold_button.grid(row=0, columnspan=2, pady=5)       
@@ -224,39 +226,24 @@ class TimeDomainView:
         
         ################################################################################################
         
+        # testing
         
-        def validate_test():
-            try:
-                test_signal = sio.read_signal_file()
-                _, amplitudes1, phase1 = self.signal.get_signal()
-                _, amplitudes2, phase2 = test_signal.get_signal()
-                amplitudes1 = [round(x, 8) for x in amplitudes1]
-                amplitudes2 = [round(x, 8) for x in amplitudes2]           
-                    
-                    
-                b1 = sc.SignalComapreAmplitude(amplitudes1, amplitudes2) # 0.905007438022
-                b2= True
-                
-                if self.signal.signal_type == "FREQ":
-                    phase1 = [round(x, 8) for x in phase1]
-                    phase2 = [round(x, 8) for x in phase2]
-                    b2 = sc.SignalComaprePhaseShift(phase1, phase2)  
-                
-                if b1 and b2:
-                    print("Signal compared successfully")
-                    tk.messagebox.showinfo("Success", "Tests passed successfully")
-    
-                else:
-                    print("Signal compared failed")
-                    tk.messagebox.showinfo("Success", f"Tests failed Amplitude passed: {b1}, phase passed: {b2}")
-            except Exception as e:
-                tk.messagebox.showerror("Error", "Invalid amplitude or phase value, error: "+str(e))
+        def test_derivative():
+            ds.DerivativeSignal()
             
+        test_frame = tk.LabelFrame(control_frame, text="Testing", font=("Arial", 14), bg='#F5F5F5', padx=5, pady=5)
+        test_frame.pack(pady=5)
         
-        testing = tk.LabelFrame(control_frame, text="Compare signal", font=("Arial", 14), bg='#F5F5F5', padx=20, pady=10)
-        testing.pack(pady=5)
-        load_button_polar = tk.Button(testing, text="Load Test Signal", command=validate_test, **button_style)
-        load_button_polar.pack()
+        test_button = tk.Button(test_frame, text="Test Derivative", command=test_derivative, **button_style)
+        test_button.grid(row=0, columnspan=2, pady=5)
+        
+        def test_shift():
+            x, y, z = self.signal.get_signal()
+            path = sio.get_file_path()
+            Shift_Fold_Signal(file_name=path ,Your_indices=x ,Your_samples=y)
+            
+        test_button2 = tk.Button(test_frame, text="Test Shift", command=test_shift, **button_style)
+        test_button2.grid(row=1, columnspan=2, pady=5)
 
         ################################################################################################
         

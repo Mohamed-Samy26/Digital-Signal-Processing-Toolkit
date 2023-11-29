@@ -30,18 +30,18 @@ def sharpen(signal:SignalData):
         raise ValueError("Signal must be a time domain signal.")
     
     first_derivative = []
-    first_derivative.append((signal.points[0][0], 0))
+    # first_derivative.append((signal.points[0][0], 0))
     for i in range(1, len(signal.points)):
         first_derivative.append((signal.points[i][0], signal.points[i][1] - signal.points[i-1][1]))
     
             
     second_derivative = []
-    second_derivative.append((first_derivative[0][0], 0))
+    # second_derivative.append((first_derivative[0][0], 0))
     
     for i in range(1, len(signal.points) -1):
         second_derivative.append((signal.points[i][0], (signal.points[i+1][1] - (2*signal.points[i][1]) + signal.points[i-1][1])))
         
-    second_derivative.append((signal.points[-1][0], 0))
+    # second_derivative.append((signal.points[-1][0], 0))
     
     return SignalData("TIME", signal.is_periodic, first_derivative), SignalData("TIME", signal.is_periodic, second_derivative)
 
@@ -50,11 +50,10 @@ def fold_signal(signal:SignalData):
         raise ValueError("Signal must be a time domain signal.")
     
     points = []
-    # reverse the signal
-    start = signal.points[0][0]
-    end = signal.points[-1][0]
+    # reverse the signal points indices
     for i in range(len(signal.points)):
-        points.append((end - (signal.points[i][0] + start), signal.points[i][1]))
+        points.append((signal.points[-i-1][0], signal.points[i][1]))
+    
     
     return SignalData("TIME", signal.is_periodic, points)
 

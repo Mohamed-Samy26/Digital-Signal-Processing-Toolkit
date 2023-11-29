@@ -55,6 +55,10 @@ def write_signal_file(signal_data: SignalData):
     if file_path:
         write_signal(file_path, signal_data)
 
+def get_file_path():
+    file_path = filedialog.askopenfilename(filetypes=[('Text Files', '*.txt')])
+    return file_path
+
 def choose_file():
     file_path = filedialog.askopenfilename(filetypes=[('Text Files', '*.txt')])
     if file_path:
@@ -76,3 +80,5 @@ def choose_file():
         canvas_discrete = FigureCanvasTkAgg(fig_discrete, master=root)
         canvas_discrete.draw()
         canvas_discrete.get_tk_widget().pack(side=tk.RIGHT, fill=tk.BOTH, expand=1)
+        
+    
