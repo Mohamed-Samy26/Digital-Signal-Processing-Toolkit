@@ -3,7 +3,9 @@ import MultiSignalOperations as Ms
 import SingleSignalOperations as Ss
 import GenerateWindow as fw
 import Frequency_Domain as freq_domain
+import TimeDomainView as time_domain
 import Quantize_Signal as quant_sig
+import CorrelationView as correlation
 class MainWindow:
     def __init__(self):
         self.window = tk.Tk()
@@ -39,6 +41,10 @@ class MainWindow:
         button6 = tk.Button(self.window, text="Time Domain", command=self.open_time_domain, **button_style)
         button6.pack(pady=10)
 
+        # create Correlation button
+        button6 = tk.Button(self.window, text="Correlation", command=self.open_correlation, **button_style)
+        button6.pack(pady=10)
+
     def open_signal_generation(self):
         self.window.destroy()
         x = fw.SignalProcessingApp()
@@ -64,8 +70,13 @@ class MainWindow:
 
     def open_time_domain(self):
         self.window.destroy()
-        x = freq_domain.FrequencyDomain()
-        x.run_time_domain()
+        x = time_domain.TimeDomainView()
+        x.run()
+
+    def open_correlation(self):
+        self.window.destroy()
+        x = correlation.Correlationview()
+        x.run()
         
     def close(self):
         self.window.quit()
