@@ -49,11 +49,12 @@ def fold_signal(signal:SignalData):
     if signal.signal_type != "TIME":
         raise ValueError("Signal must be a time domain signal.")
     
-    points = []
-    # reverse the signal points indices
-    for i in range(len(signal.points)):
-        points.append((signal.points[-i-1][0], signal.points[i][1]))
+    x, y, _ = signal.get_signal()
     
+    y.reverse()
+    points = []
+    for i in range(len(x)):
+        points.append((x[i], y[i]))
     
     return SignalData("TIME", signal.is_periodic, points)
 
