@@ -8,6 +8,7 @@ import main as t2
 import DerivativeSignal as ds
 from Test_Shift_Fold_Signal import Shift_Fold_Signal
 from comparesignals import SignalSamplesAreEqual
+import comparesignal2 as cs
 
 class TimeDomainView:
     
@@ -113,7 +114,7 @@ class TimeDomainView:
         root = tk.Tk()
         self.root = root
         root.title("Time Domain Signal Processing")
-        root.geometry("1350x750")
+        root.geometry("1350x800")
         root.configure(bg="white")
         root.grid_columnconfigure(0, weight=1)
         root.grid_columnconfigure(1, weight=5)
@@ -146,6 +147,7 @@ class TimeDomainView:
         
         plot_button = tk.Button(load_frame, text="Plot Signal", command=lambda: self.plot_signal(), **button_style)
         plot_button.grid(row=0, column=2, padx=5, pady=5)
+
 
         ################################################################################################
         
@@ -259,6 +261,25 @@ class TimeDomainView:
             
         test_button3 = tk.Button(test_frame, text="Test Compare", command=test_compare, **button_style)
         test_button3.grid(row=1, columnspan=2, pady=5)
+
+        def remove_dc():
+            try:
+                if not self.validate_input():
+                    return
+
+                # Remove DC component from the current signal
+                self.signal = removing_dc(self.signal)
+
+                # Update the plot with the modified signal
+                self.canva.update_plot2(self.signal, title="Signal without DC Component")
+                cs.SignalSamplesAreEqual(file_name='task4/Remove DC component/DC_component_output.txt',
+                                         samples=self.signal.points)
+            except Exception as e:
+                tk.messagebox.showerror("Error", f"Failed to remove DC component: {str(e)}")
+
+        remove_dc_button = tk.Button(test_frame, text="Remove DC", command=remove_dc, **button_style)
+        remove_dc_button.grid(row=2, columnspan=2, pady=5)
+
 
         ################################################################################################
         

@@ -1,10 +1,14 @@
+from tkinter import messagebox
+
+import numpy as np
+
 from TimeDomain import *
 import tkinter as tk
 import PlotDisplay as pd
 import signal_io as sio
 import main as t2
 import ConvTest as covtest
-
+import CompareSignal as cs
 
 
 class Correlationview:
@@ -68,12 +72,42 @@ class Correlationview:
         # Plot the convolution result
         self.canva.plot_single(signal)
 
+    def perform_correlation(self):
+        if not self.validate_input(self.signal1):
+            return
+
+        if not self.validate_input(self.signal2):
+            return
+
+        indices_signal1, s1, _ = self.signal1.get_signal()
+        indices_signal2, s2, _ = self.signal2.get_signal()
+
+        # Perform correlation
+        correlation_length = len(s1)
+        correlation_result = [0] * correlation_length
+        s1_sq= [x**2 for x in s1]
+        s2_sq =[x**2 for x in s2]
+        mult=np.sum(s1_sq)*np.sum(s2_sq)
+        dom=np.sqrt(mult)
+        for i in range(len(s1)):
+            for j in range(len(s2)):
+                correlation_result[i] += s1[j] * s2[(j+i)%len(s2)]
+        correlation_indices = np.arange(0, len(s1))
+        print(correlation_result)
+        correlation_result=correlation_result/dom
+        correlation_points = list(zip(correlation_indices, correlation_result))
+        correlation_signal = SignalData("TIME", False, correlation_points)
+        # Plot the correlation result
+        self.canva.plot_single(correlation_signal)
+
+        cs.Compare_Signals('Point1 Correlation/CorrOutput.txt',correlation_indices,correlation_result)
+        messagebox.showinfo("Correlation", "Correlation performed successfully!")
 
     def run(self):
         # Create GUI window
         root = tk.Tk()
         self.root = root
-        root.title("Time Domain Signal Processing")
+        root.title("Convolution Signal Processing")
         root.geometry("1350x800")
         root.configure(bg="white")
         root.grid_columnconfigure(0, weight=1)
@@ -114,9 +148,17 @@ class Correlationview:
         convolution_frame = tk.LabelFrame(control_frame, text="Moving Average", font=("Arial", 14), bg='#F5F5F5', padx=5,pady=5)
         convolution_frame.pack(pady=5)
 
-        convolution_button = tk.Button(convolution_frame, text="Calculate Correlation",
+        convolution_button = tk.Button(convolution_frame, text="Calculate Convolution",
                                        command=self.perform_convolution, **button_style)
         convolution_button.grid(row=1, columnspan=2, pady=5)
+
+        correlation_frame = tk.LabelFrame(control_frame, text="Correlation", font=("Arial", 14), bg='#F5F5F5', padx=5,
+                                          pady=5)
+        correlation_frame.pack(pady=5)
+
+        correlation_button = tk.Button(correlation_frame, text="Perform Correlation", command=self.perform_correlation,
+                                       **button_style)
+        correlation_button.grid(row=2, columnspan=2, pady=5)
 
         def close():
             self.root.quit()

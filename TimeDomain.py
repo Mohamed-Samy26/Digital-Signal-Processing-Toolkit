@@ -1,5 +1,5 @@
 import numpy as np
-
+import FourierTransform as ft
 from SignalData import SignalData
 
 
@@ -68,3 +68,11 @@ def shift_signal(signal:SignalData, shift:int):
     
     return SignalData("TIME", signal.is_periodic, points)
 
+
+def removing_dc(signal: SignalData):
+    Xn = [point[0] for point in signal.points]
+    Yn = [point[1] for point in signal.points]
+    updated = np.array(Yn) - np.mean(Yn)
+    signal.points = list(zip(Xn, updated))
+    return SignalData("TIME", signal.is_periodic, signal.points)
+    #return ft.FourierTransform().remove_dc_component(signal)

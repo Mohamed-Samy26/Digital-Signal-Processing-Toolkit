@@ -114,14 +114,11 @@ class FourierTransform:
                 file.write(f"{coefficient.real}\t{coefficient.imag}\n")
 
     def remove_dc_component(self, signal: SignalData) -> SignalData:
-        if signal.signal_type == "TIME":
-            # Applying DFT to the time domain signal
+        if signal.signal_type == "FREQ":
             freq_domain_signal = self.DFT(signal)
 
-            # Setting the DC component to 0 in the frequency domain signal
             freq_domain_signal.points[0] = (freq_domain_signal.points[0][0], 0, freq_domain_signal.points[0][2])
 
-            # Applying IDFT to the modified frequency domain signal
             new_time_domain_signal = self.IDFT(freq_domain_signal)
 
             return new_time_domain_signal
