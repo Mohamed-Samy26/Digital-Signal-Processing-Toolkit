@@ -15,7 +15,7 @@ class MainWindow:
         self.create_widgets()
 
     def create_widgets(self):
-        button_style = {"font": ("Arial", 14), "bg": "#4CAF50", "fg": "white", "padx": 10, "pady": 5, "bd": 0, "width": 25}
+        button_style = {"font": ("Arial", 12), "bg": "#4CAF50", "fg": "white", "padx": 10, "pady": 5, "bd": 0, "width": 25}
 
         # Create Task1 Button
         button1 = tk.Button(self.window, text="Sinusoidal Signal Generation", command=self.open_signal_generation, **button_style)
@@ -42,7 +42,7 @@ class MainWindow:
         button6.pack(pady=10)
 
         # create Correlation button
-        button6 = tk.Button(self.window, text="Correlation", command=self.open_correlation, **button_style)
+        button6 = tk.Button(self.window, text="Conv. & Correlation", command=self.open_correlation, **button_style)
         button6.pack(pady=10)
 
     def open_signal_generation(self):

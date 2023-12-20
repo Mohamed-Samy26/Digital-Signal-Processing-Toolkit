@@ -21,14 +21,14 @@ class PlotDisplay:
     def calculate_bar_width(self, num_bars):
         return (self.FIG_WIDTH / num_bars) * (1 - self.SPACE_FACTOR)
 
-    def plot_single(self, signal: SignalData):
+    def plot_single(self, signal: SignalData, title: str = None):
         """Update the plot with the given signal data"""
         self.axes[0].clear()  # Clear the previous plot
         self.axes[1].clear()
         Xn, Yn, phase = signal.get_signal()  # Get the signal data
         if signal.signal_type == "TIME":
             self.axes[0].stem(Xn, Yn, use_line_collection=True)
-            self.axes[0].set_title("Time Domain Signal")
+            self.axes[0].set_title("Time Domain Signal "+(title if title else ""))
             self.axes[0].set_xlabel("Time")
             self.axes[0].set_ylabel("Amplitude")
             self.axes[0].grid()
@@ -39,13 +39,13 @@ class PlotDisplay:
             self.axes[0].bar(Xn, Yn, width=width)
             self.axes[0].set_xlabel("Frequency (Hz)")
             self.axes[0].set_ylabel("Amplitude")
-            self.axes[0].set_title("Frequency vs Amplitude")
+            self.axes[0].set_title("Frequency vs Amplitude "+(title if title else ""))
 
             # Plot frequency versus phase
             self.axes[1].bar(Xn, phase, width=width)
             self.axes[1].set_xlabel("Frequency (Hz)")
             self.axes[1].set_ylabel("Phase (radians)")
-            self.axes[1].set_title("Frequency vs Phase")
+            self.axes[1].set_title("Frequency vs Phase "+(title if title else ""))
             self.figure.tight_layout()
 
         self.canvas.draw()  # Redraw the canvas with the updated plot
@@ -61,6 +61,8 @@ class PlotDisplay:
     ):
         """Update the plot with the given signal data"""
         self.axes[0].clear()  # Clear the previous plot
+        if signal is None:
+            return
         Xn, Yn, phase = signal.get_signal()
         if signal.signal_type == "TIME":
             self.axes[0].stem(Xn, Yn, use_line_collection=True)
@@ -99,6 +101,8 @@ class PlotDisplay:
     def update_plot2(self, signal: SignalData, freq_type: ["AMP", "PHASE"] = "AMP", title: str = None):
         """Update the plot with the given signal data"""
         self.axes[1].clear()  # Clear the previous plot
+        if signal is None:
+            return
         self.axes[1].axis("on")
         Xn, Yn, phase = signal.get_signal()
         if signal.signal_type == "TIME":

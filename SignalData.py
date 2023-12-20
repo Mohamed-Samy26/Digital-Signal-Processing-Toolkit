@@ -17,9 +17,26 @@ class SignalData:
         self.is_periodic = is_periodic
         self.points = points
         self.num_samples = len(points)
+        if self.signal_type == "FREQ" and len(points[0]) == 2:
+            self.points = [(point[0], point[1], 0) for point in points]
     
     def __str__(self):
         return f"Signal Type: {self.signal_type}\nIs Periodic: {self.is_periodic}\nNumber of Samples: {self.num_samples}\nPoints: {self.points}"
+    
+    def __len__(self):
+        return self.num_samples
+    
+    def __getitem__(self, index):
+        return self.points[index]
+    
+    def __setitem__(self, index, value):
+        self.points[index] = value
+        
+    def __iter__(self):
+        return iter(self.points)
+    
+    def __eq__(self, other):
+        return self.points == other.points and self.signal_type == other.signal_type and self.is_periodic == other.is_periodic
     
     def get_figure(self):
         """Returns the figure of the signal"""
@@ -70,6 +87,15 @@ class SignalData:
         Yn = [point[1] for point in self.points]
         phase = None
         if self.signal_type == "FREQ":
-            phase = [point[2] for point in self.points]
+            try:
+                phase = [point[2] for point in self.points]
+            except IndexError:
+                phase = [0 for _ in range(len(Xn))]
         return Xn, Yn, phase
   
+    def conjugate(self):
+        if self.signal_type == "TIME":
+            raise ValueError("Cannot get conjugate of a time domain signal.")
+        freq, amplitude, phase = self.get_signal()
+        conjugate = [(freq, np.conjugate(val)) for freq, val in zip(freq, amplitude)]
+        return SignalData("FREQ", phase.is_periodic, conjugate)
