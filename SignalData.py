@@ -1,3 +1,4 @@
+import cmath
 from typing import List
 
 from matplotlib import pyplot as plt
@@ -92,10 +93,14 @@ class SignalData:
             except IndexError:
                 phase = [0 for _ in range(len(Xn))]
         return Xn, Yn, phase
-  
-    def conjugate(self):
+ 
+    def complex(self):
         if self.signal_type == "TIME":
-            raise ValueError("Cannot get conjugate of a time domain signal.")
-        freq, amplitude, phase = self.get_signal()
-        conjugate = [(freq, np.conjugate(val)) for freq, val in zip(freq, amplitude)]
-        return SignalData("FREQ", phase.is_periodic, conjugate)
+            raise ValueError("Cannot get complex form of time domain signal.")
+        return [cmath.rect(amp, phase) for freq, amp, phase in self.points]
+ 
+    def conjugate(self):
+        return np.conjugate(self.complex())
+         
+        
+        
