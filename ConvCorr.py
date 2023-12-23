@@ -124,36 +124,37 @@ def fast_correlation(signal1: SignalData, signal2: SignalData = None):
         raise ValueError("Signals must be in the time domain.")
     ft = fr.FourierTransform()
     if len(signal1) != len(signal2):
-        padding = len(signal1) + len(signal2) - 1
-        signal1 = SignalData(
-                "TIME",
-                False,
-                list(
-                    zip(
-                        np.arange(0, padding),
-                        np.pad(
-                            signal1.get_signal()[1],
-                            (0, padding - len(signal1.get_signal()[1])),
-                            "constant",
-                        ),
-                    )
-                ),
-            )
-        signal2 = SignalData(
-            "TIME",
-            False,
-            list(
-                zip(
-                    np.arange(0, padding),
-                    np.pad(
-                        signal2.get_signal()[1],
-                        (0, padding - len(signal2.get_signal()[1])),
-                        "constant",
-                    ),
-                )
-            ),
-        )
-
+        raise ValueError("Signals must be of the same length.")
+        # padding = len(signal1) + len(signal2) - 1
+        # signal1 = SignalData(
+        #         "TIME",
+        #         False,
+        #         list(
+        #             zip(
+        #                 np.arange(0, padding),
+        #                 np.pad(
+        #                     signal1.get_signal()[1],
+        #                     (0, padding - len(signal1.get_signal()[1])),
+        #                     "constant",
+        #                 ),
+        #             )
+        #         ),
+        #     )
+        # signal2 = SignalData(
+        #     "TIME",
+        #     False,
+        #     list(
+        #         zip(
+        #             np.arange(0, padding),
+        #             np.pad(
+        #                 signal2.get_signal()[1],
+        #                 (0, padding - len(signal2.get_signal()[1])),
+        #                 "constant",
+        #             ),
+        #         )
+        #     ),
+        # )
+        
     fft_signal1 = ft.DFT(signal1)
     fft_signal2 = ft.DFT(signal2)
     return ft.IDFT(complex_multi(fft_signal1, fft_signal2, True))
