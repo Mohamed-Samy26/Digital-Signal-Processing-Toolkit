@@ -118,10 +118,10 @@ def fast_convolution(signal1: SignalData, signal2: SignalData):
 
 
 def fast_correlation(signal1: SignalData, signal2: SignalData = None):
-    if signal1.signal_type != signal2.signal_type != "TIME":
-        raise ValueError("Signals must be in the time domain.")
     if signal2 is None:
         signal2 = signal1
+    if signal1.signal_type != signal2.signal_type != "TIME":
+        raise ValueError("Signals must be in the time domain.")
     ft = fr.FourierTransform()
     if len(signal1) != len(signal2):
         padding = len(signal1) + len(signal2) - 1
